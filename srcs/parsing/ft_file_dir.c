@@ -6,7 +6,7 @@
 /*   By: jjolivot <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/06 22:59:38 by jjolivot          #+#    #+#             */
-/*   Updated: 2018/09/09 16:20:20 by jjolivot         ###   ########.fr       */
+/*   Updated: 2018/09/20 17:29:17 by jjolivot         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,11 @@ int		ft_is_file(t_arg **maillon, t_flag flag)
 	//si n'existe pas, supprime le maillon et renvoie 0
 	struct	stat file;
 
+//	printf("asdfg%s\n", ((*maillon)->path));
 	errno = 0;
-	if(lstat((*maillon)->path, &file) && errno == ENOENT)
-	{
+	if ((*maillon) && (*maillon)->path)
+		lstat((*maillon)->path, &file);
+		/*	{
 		ft_putstr("ft_ls: ");
 		ft_putstr((*maillon)->path);
 		ft_putstr(": No such file or directory\n");
@@ -46,11 +48,12 @@ int		ft_is_file(t_arg **maillon, t_flag flag)
 		ft_delete_arg(maillon);
 	//	ft_arg_print(*maillon);
 		return (0);
-	}
+	}*/
 	//si dossier ou link sans -l renvoi 0
 	if (S_ISDIR(file.st_mode) || (S_ISLNK(file.st_mode) && flag.l == 0))
 	{
 		return (0);
 	}//sinon renvoie 1
+		printf("%p", &file);
 	return(1);
 }

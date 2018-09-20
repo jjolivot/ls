@@ -6,7 +6,7 @@
 /*   By: jjolivot <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/04 18:25:09 by jjolivot          #+#    #+#             */
-/*   Updated: 2018/09/09 18:02:48 by jjolivot         ###   ########.fr       */
+/*   Updated: 2018/09/20 18:05:31 by jjolivot         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ int	ft_parsing(int argc, char **argv, t_arg **arg, t_flag *flag)
 		(*arg) = ft_sort(arg);//trier liste
 		(*arg) = ft_sort_file_and_dir(arg, *flag);	//verifier que les fichiers et dossier existent (print et sup ceux qui nexistent pas)
 	}
+	ft_check_fexist(arg);
 	if (flag->t)
 		(*arg) = ft_time_sort(arg, *flag);//trier liste par time
 	if (flag->r)
@@ -61,9 +62,13 @@ int	ft_parsing(int argc, char **argv, t_arg **arg, t_flag *flag)
 t_arg *ft_arg_join(t_arg *arg, char *path)
 {
 	struct s_arg *new;
+	size_t l;
 
-	if (!(new = (struct s_arg *) malloc(sizeof(struct s_arg))))
-		exit(0);
+	l = sizeof(t_arg);
+
+	new = NULL;
+	if (!(new = malloc(l)))
+		exit(0); // FUITE INCONNU
 	new->prev = arg;
 	new->path = ft_strdup(path);
 	if (arg)

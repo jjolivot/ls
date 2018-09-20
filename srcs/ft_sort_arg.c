@@ -6,7 +6,7 @@
 /*   By: jjolivot <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/07 12:39:17 by jjolivot          #+#    #+#             */
-/*   Updated: 2018/09/07 13:14:56 by jjolivot         ###   ########.fr       */
+/*   Updated: 2018/09/12 18:09:49 by jjolivot         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ struct s_arg *ft_sort_file_and_dir(struct s_arg **maillon, t_flag flag)
 	first = (*maillon);
 		while ((*maillon)->next)
 		{
+			ft_check_fexist(maillon);
 			if (ft_is_dir_and_file(ft_is_file(maillon, flag), ft_is_file(&(*maillon)->next, flag)))
 			{
 				ft_inverse_maillon(maillon);

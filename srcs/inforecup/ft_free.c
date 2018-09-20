@@ -6,7 +6,7 @@
 /*   By: jjolivot <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 19:42:08 by jjolivot          #+#    #+#             */
-/*   Updated: 2018/09/11 23:26:02 by jjolivot         ###   ########.fr       */
+/*   Updated: 2018/09/20 18:18:04 by jjolivot         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,15 @@ void	ft_free_file(t_file *file)
 	file->name = NULL;
 	file->buf = NULL;
 	file->path = NULL;
+	if (file && file->next)
+		file->next->prev = NULL;
+	if (file)
+	{
+		if (file->prev)
+			file->prev->next = NULL;
+		free(file);
+	}
+	file = NULL;
 }
 
 void	ft_free_all_files(t_file *file)

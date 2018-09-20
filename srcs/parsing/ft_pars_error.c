@@ -6,13 +6,13 @@
 /*   By: jjolivot <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/04 19:46:07 by jjolivot          #+#    #+#             */
-/*   Updated: 2018/09/12 15:59:14 by jjolivot         ###   ########.fr       */
+/*   Updated: 2018/09/13 16:05:14 by jjolivot         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/ft_ls.h"
 
-int	ft_is_arg(char c, t_flag *flag)
+int		ft_is_arg(char c, t_flag *flag)
 {
 	if (c == 't' || c == 'l' || c == 'r' || c == 'R' || c == 'a')
 	{
@@ -33,13 +33,23 @@ int	ft_is_arg(char c, t_flag *flag)
 
 void	ft_permission_denied(char *path)
 {
+	struct	stat buf;
+	int		s;
+	s = stat(path, &buf);
+	if (s != -1)
+	{
 		ft_putstr("ft_ls: ");
 		ft_putstr(path);
 		ft_putstr(": Permission denied\n");
-
+	}
+	else
+	{
+		ft_putstr(path);
+		ft_putchar('\n');
+	}
 }
 
-int ft_bad_arg_error(char c)
+int		ft_bad_arg_error(char c)
 {
 	ft_putstr("ft_ls: illegal option -- ");
 	ft_putchar(c);
@@ -47,12 +57,55 @@ int ft_bad_arg_error(char c)
 	return (1);
 }
 
-int	ft_empty_arg_error()
+int		ft_empty_arg_error()
 {
 	ft_putstr("ls: fts_open: No such file or directory\n");
 	return (1);
 }
 
+void	ft_arg_del(struct s_arg *maillon)
+{
+	struct s_arg *tmp;
+
+	tmp = maillon;
+
+	if (maillon->prev)
+		maillon->prev->next = maillon->next;
+	if (maillon->next)
+		maillon->next->prev = maillon->prev;
+	free(maillon->path);
+	free(maillon);
+}
+
+void	ft_check_fexist(struct s_arg **maillon)
+{
+	struct stat buf;
+	struct s_arg *tmp;
+	struct s_arg *first;
+
+	first = (*maillon);
+	while ((*maillon))
+	{
+		if (lstat((*maillon)->path, &buf) == -1)
+		{
+			ft_putstr("ls: ");
+			ft_putstr((*maillon)->path);
+			ft_putstr(": No such file or directory\n");
+			tmp = (*maillon);
+			(*maillon) = (*maillon)->next;
+			if (first == tmp)
+				first = first->next;
+			ft_arg_del(tmp);
+		}
+		else
+			(*maillon) = (*maillon)->next;
+	}
+	(*maillon) = first;
+//	while((*maillon) && (*maillon)->prev)
+//		*maillon = (*maillon)->prev;
+	if (!(*maillon))
+		exit(1);
+}
 
 // retourne -1 si erreur, et ft_ls quitte.
 int	ft_pars_error(int argc, char **argv, t_flag *flag)

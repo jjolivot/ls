@@ -6,23 +6,11 @@
 /*   By: jjolivot <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/07 16:53:40 by jjolivot          #+#    #+#             */
-/*   Updated: 2018/09/12 15:47:38 by jjolivot         ###   ########.fr       */
+/*   Updated: 2018/09/20 18:53:58 by jjolivot         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/ft_ls.h"
-
-t_file	*ft_file_add(t_file *file)
-{
-	t_file *new;
-
-	new = (t_file *)malloc(sizeof(struct s_file));
-	if (file)
-		file->next = new;
-	new->prev = file;
-	new->next = NULL;
-	return (new);
-}
 
 t_file	*ft_file_new(void)
 {
@@ -38,6 +26,18 @@ t_file	*ft_file_new(void)
 	return(file);
 }
 
+t_file	*ft_file_add(t_file *file)
+{
+	t_file *new;
+
+	new = ft_file_new();
+	if (file)
+		file->next = new;
+	new->prev = file;
+	new->next = NULL;
+	return (new);
+}
+
 char	*ft_path_convert(char *path)
 {
 	int len;
@@ -50,29 +50,51 @@ char	*ft_path_convert(char *path)
 	return(ft_strdup((path + i + 1)));
 }
 
+void	ft_maxgrpusr(struct s_file *file)
+{
+	
+	file->passwd = getpwuid(file->buf->st_uid);
+	file->grp = getgrgid(file->buf->st_gid);
+	if (file->grp)
+		file->maxgrpsize = ft_strlen(file->grp->gr_name);
+	else
+		file->maxgrpsize = 0;
+	if (file->passwd)
+		file->maxusrsize = ft_strlen(file->passwd->pw_name);
+}
+
 t_file	*ft_info(t_file *prev, int mustlink, char *path, int (stati)(const char *, struct stat *))
 {
 	t_file		*file;
 	struct stat	*buf;
 
+	buf = 0;
 	if (mustlink)
 		file = ft_file_add(prev);
 	else
 		file = ft_file_new();
 	if (!(buf = (struct stat *)malloc(sizeof(struct stat))))
 		exit (0);
-	stati(path, buf);
+	if ((stati(path, buf)) != -1)
+	{
+		file->buf = buf;
+		file->total_size = file->buf->st_blocks;
+		ft_maxgrpusr(file);
+	}
+	else
+	{
+		if (buf)
+			free(buf);
+		file->buf = NULL;
+		file->total_size = 0;
+	}
 	file->next = NULL;
-	file->buf = buf;
-	file->total_size = file->buf->st_blocks;
 	if (file->prev)
 		file->total_size = file->total_size + file->prev->total_size;
 	file->path = ft_strdup(path);
 	file->name = ft_path_convert(path);
 	return (file);
 }
-
-
 
 t_file	*ft_info_link(char *path, int  (stati)(const char *, struct stat *), t_flag flag)
 {
@@ -88,10 +110,14 @@ t_file	*ft_info_link(char *path, int  (stati)(const char *, struct stat *), t_fl
 		{
 			if (dd && (dd->d_name[0] != '.' || flag.a))
 			{
-				newpath = ft_strjoin(path, "/");
-				newpath = ft_strjoin(newpath, dd->d_name);
+				if (!(ft_strrchr(path, '/') && ft_strrchr(path, '/')[0] == '/' && ft_strrchr(path, '/')[1] == '\0'))
+				{
+					newpath = ft_strjoin(path, "/");
+					newpath = ft_f_strjoin(newpath, dd->d_name);
+				}
+				else
+					newpath = ft_strjoin(path, dd->d_name);
 				file = ft_info(file, 1, newpath, stati);
-				file->name = ft_strdup(dd->d_name);
 				free(newpath);
 			}
 		}

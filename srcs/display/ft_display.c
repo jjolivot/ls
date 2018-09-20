@@ -6,7 +6,7 @@
 /*   By: jjolivot <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/09 18:04:53 by jjolivot          #+#    #+#             */
-/*   Updated: 2018/09/11 22:15:34 by jjolivot         ###   ########.fr       */
+/*   Updated: 2018/09/20 18:06:51 by jjolivot         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,28 +79,47 @@ void	ft_list_display(t_file *file, t_flag flag)
 	}
 }
 
+void	ft_grp_usr_padding(struct s_file *file)
+{
+	int				space_number;
+
+	file->passwd = getpwuid(file->buf->st_uid);
+	file->grp = getgrgid(file->buf->st_gid);
+	if (file->passwd && file->passwd->pw_name)
+	{
+		ft_putstr(file->passwd->pw_name);
+		space_number = file->maxusrsize - ft_strlen(file->passwd->pw_name);
+		while (space_number--)
+			ft_putchar(' ');
+	}
+	else
+		ft_putnbr(file->buf->st_uid);
+	ft_putstr("\t");
+	if (!(file->grp))
+		ft_putnbr(file->buf->st_gid);
+	else
+	{
+		ft_putstr(file->grp->gr_name);
+		space_number = file->maxgrpsize - ft_strlen(file->grp->gr_name);
+		while (space_number--)
+			ft_putchar(' ');
+	}
+	ft_putstr("\t");
+
+}
+
 int	ft_display(t_file *file, t_flag flag)
 {
 	char			*tmp;
-	struct	group	*grp;
-	struct	passwd *passwd;
 
-	if (flag.l)
+	if (flag.l && file->buf)
 	{
 		ft_putstr((tmp = ft_file_and_permissions(file->buf->st_mode)));
 		free(tmp);
 		ft_putstr("\t");
 		ft_putnbr(file->buf->st_nlink);
 		ft_putstr("\t");
-		passwd = getpwuid(file->buf->st_uid);
-		ft_putstr(passwd->pw_name);
-		ft_putstr("\t");
-		grp = getgrgid(file->buf->st_gid);
-		if (!grp)
-			ft_putnbr(file->buf->st_gid);
-		else
-			ft_putstr(grp->gr_name);
-		ft_putstr("\t");
+		ft_grp_usr_padding(file);
 		if (S_ISCHR(file->buf->st_mode) || S_ISBLK(file->buf->st_mode))
 		{
 			ft_putnbr(major(file->buf->st_rdev));
@@ -112,8 +131,9 @@ int	ft_display(t_file *file, t_flag flag)
 		ft_putstr("\t");
 		ft_print_date_tab(file->buf->st_mtimespec.tv_sec);
 	}
-	ft_putstr(file->name);
-	if (flag.l && S_ISLNK(file->buf->st_mode))
+	if (file->buf)
+		ft_putstr(file->name);
+	if (file->buf && flag.l && S_ISLNK(file->buf->st_mode))
 	{
 		ft_putstr(" -> ");
 		if (!(tmp = (char *)malloc(sizeof(char) * 4096 + 1)))
@@ -122,6 +142,7 @@ int	ft_display(t_file *file, t_flag flag)
 		ft_putstr(tmp);
 		free(tmp);
 	}
-	ft_putstr("\n");
+	if (file->buf)
+		ft_putstr("\n");
 	return (0);
 }
