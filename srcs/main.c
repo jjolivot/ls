@@ -6,7 +6,7 @@
 /*   By: jjolivot <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/04 18:02:56 by jjolivot          #+#    #+#             */
-/*   Updated: 2018/09/20 18:54:19 by jjolivot         ###   ########.fr       */
+/*   Updated: 2018/09/20 22:38:13 by jjolivot         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	ft_set_zero(t_arg *arg, t_flag *flag)
 	flag->t = 0;
 	flag->r = 0;
 	flag->l = 0;
-	flag->R = 0;
+	flag->rr = 0;
 	flag->a = 0;
 }
 
@@ -28,16 +28,16 @@ void	ft_free_all_arg(t_arg *arg)
 	t_arg	*tmp;
 
 	if (arg->prev)
-	while(arg)
-	{
-		tmp = arg;
-		arg = arg->next;
-		free(tmp->path);
-		free(tmp);
-	}
+		while (arg)
+		{
+			tmp = arg;
+			arg = arg->next;
+			free(tmp->path);
+			free(tmp);
+		}
 }
 
-int main(int argc, char **argv)
+int		main(int argc, char **argv)
 {
 	t_flag	flag;
 	t_arg	*arg;
@@ -47,9 +47,8 @@ int main(int argc, char **argv)
 	arg = NULL;
 	multiple_arg = 0;
 	ft_set_zero(arg, &flag);
-	if (ft_parsing(argc, argv, &arg, &flag)) //print et quitte erreurs de flags, arg vide ou inexistant.
-											//Met une liste chaine d'argument dans arg.
-	return (-1);
+	if (ft_parsing(argc, argv, &arg, &flag))
+		return (-1);
 	if (arg->next)
 		multiple_arg = 1;
 	first = arg;
@@ -60,7 +59,4 @@ int main(int argc, char **argv)
 	}
 	ft_free_all_arg(first);
 	return (0);
-	//trie les fichiers
-	//verifie tout les fichiers existent
-	//place les 
 }

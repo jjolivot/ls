@@ -6,11 +6,37 @@
 /*   By: jjolivot <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/11 19:42:08 by jjolivot          #+#    #+#             */
-/*   Updated: 2018/09/20 18:18:04 by jjolivot         ###   ########.fr       */
+/*   Updated: 2018/09/20 22:16:25 by jjolivot         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/ft_ls.h"
+
+t_file	*ft_file_new(void)
+{
+	t_file *file;
+
+	if (!(file = (t_file *)malloc(sizeof(struct s_file))))
+		exit(0);
+	file->prev = NULL;
+	file->buf = NULL;
+	file->path = NULL;
+	file->name = NULL;
+	file->next = NULL;
+	return (file);
+}
+
+t_file	*ft_file_add(t_file *file)
+{
+	t_file *new;
+
+	new = ft_file_new();
+	if (file)
+		file->next = new;
+	new->prev = file;
+	new->next = NULL;
+	return (new);
+}
 
 void	ft_free_file(t_file *file)
 {

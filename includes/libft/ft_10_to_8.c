@@ -6,13 +6,13 @@
 /*   By: jjolivot <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/23 14:11:28 by jjolivot          #+#    #+#             */
-/*   Updated: 2018/06/23 14:42:18 by jjolivot         ###   ########.fr       */
+/*   Updated: 2018/09/20 22:42:51 by jjolivot         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-#include <stdio.h>
-int ft_10_to_8(int start)
+
+int	ft_10_to_8(int start)
 {
 	int reste;
 	int end;

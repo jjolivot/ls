@@ -1,23 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_power.c                                         :+:      :+:    :+:   */
+/*   ft_pars_error2.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jjolivot <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/07/23 16:25:29 by jjolivot          #+#    #+#             */
-/*   Updated: 2018/09/20 22:44:01 by jjolivot         ###   ########.fr       */
+/*   Created: 2018/09/20 21:45:14 by jjolivot          #+#    #+#             */
+/*   Updated: 2018/09/20 21:47:04 by jjolivot         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../../includes/ft_ls.h"
 
-int		ft_power(int nbr, int power)
+int		ft_bad_arg_error(char c)
 {
-	int base;
+	ft_putstr("ft_ls: illegal option -- ");
+	ft_putchar(c);
+	ft_putstr("\n usage: ls [-laRrt] [file ...]\n");
+	return (1);
+}
 
-	base = nbr;
-	while (--power > 0)
-		nbr = nbr * base;
-	return (nbr);
+int		ft_empty_arg_error(void)
+{
+	ft_putstr("ls: fts_open: No such file or directory\n");
+	return (1);
 }

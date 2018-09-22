@@ -6,7 +6,7 @@
 /*   By: jjolivot <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/04 19:46:07 by jjolivot          #+#    #+#             */
-/*   Updated: 2018/09/13 16:05:14 by jjolivot         ###   ########.fr       */
+/*   Updated: 2018/09/20 22:39:23 by jjolivot         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,20 +21,21 @@ int		ft_is_arg(char c, t_flag *flag)
 		if (c == 'l')
 			flag->l = 1;
 		if (c == 'R')
-			flag->R = 1;
+			flag->rr = 1;
 		if (c == 'r')
 			flag->r = 1;
 		if (c == 'a')
 			flag->a = 1;
-		return(0);
+		return (0);
 	}
 	return (1);
 }
 
 void	ft_permission_denied(char *path)
 {
-	struct	stat buf;
-	int		s;
+	struct stat	buf;
+	int			s;
+
 	s = stat(path, &buf);
 	if (s != -1)
 	{
@@ -49,26 +50,11 @@ void	ft_permission_denied(char *path)
 	}
 }
 
-int		ft_bad_arg_error(char c)
-{
-	ft_putstr("ft_ls: illegal option -- ");
-	ft_putchar(c);
-	ft_putstr("\n usage: ls [-laRrt] [file ...]\n");
-	return (1);
-}
-
-int		ft_empty_arg_error()
-{
-	ft_putstr("ls: fts_open: No such file or directory\n");
-	return (1);
-}
-
 void	ft_arg_del(struct s_arg *maillon)
 {
 	struct s_arg *tmp;
 
 	tmp = maillon;
-
 	if (maillon->prev)
 		maillon->prev->next = maillon->next;
 	if (maillon->next)
@@ -79,9 +65,9 @@ void	ft_arg_del(struct s_arg *maillon)
 
 void	ft_check_fexist(struct s_arg **maillon)
 {
-	struct stat buf;
-	struct s_arg *tmp;
-	struct s_arg *first;
+	struct stat		buf;
+	struct s_arg	*tmp;
+	struct s_arg	*first;
 
 	first = (*maillon);
 	while ((*maillon))
@@ -101,14 +87,11 @@ void	ft_check_fexist(struct s_arg **maillon)
 			(*maillon) = (*maillon)->next;
 	}
 	(*maillon) = first;
-//	while((*maillon) && (*maillon)->prev)
-//		*maillon = (*maillon)->prev;
 	if (!(*maillon))
 		exit(1);
 }
 
-// retourne -1 si erreur, et ft_ls quitte.
-int	ft_pars_error(int argc, char **argv, t_flag *flag)
+int		ft_pars_error(int argc, char **argv, t_flag *flag)
 {
 	int i;
 	int y;
@@ -123,13 +106,11 @@ int	ft_pars_error(int argc, char **argv, t_flag *flag)
 		i++;
 		y = 0;
 	}
-	while(i < argc && argv[i])
+	while (i < argc && argv[i])
 	{
-		if(!ft_strlen(argv[i]))
-			return(ft_empty_arg_error());
+		if (!ft_strlen(argv[i]))
+			return (ft_empty_arg_error());
 		i++;
-		// si le dossier ou fichier n'existe pas, print
 	}
 	return (0);
 }
-
