@@ -6,7 +6,7 @@
 /*   By: jjolivot <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/06 21:43:51 by jjolivot          #+#    #+#             */
-/*   Updated: 2018/09/25 18:06:06 by jjolivot         ###   ########.fr       */
+/*   Updated: 2018/09/25 18:32:14 by jjolivot         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,15 @@
 
 int	ft_is_dir(char *path, t_flag *flag)
 {
-	struct stat file;
+	struct stat	file;
+	int			i;
 
-	lstat(path, &file);
-	if (S_ISDIR(file.st_mode) || (S_ISLNK(file.st_mode) && flag->l == 0))
-	{
-		return (1);
-	}
+	i = lstat(path, &file);
+	if (i != -1)
+		if (S_ISDIR(file.st_mode) || (S_ISLNK(file.st_mode) && flag->l == 0))
+		{
+			return (1);
+		}
 	return (0);
 }
 
@@ -36,8 +38,9 @@ int	ft_rels(t_file *file, t_flag *flag, int multiple_arg)
 				ft_putchar('\n');
 				ft_ls(file->path, flag, multiple_arg);
 			}
-		if (!ft_is_dir(file->path, flag) && (S_ISDIR(file->buf->st_mode) ||
-			(S_ISLNK(file->buf->st_mode) && flag->l == 0)))
+		if (!ft_is_dir(file->path, flag) && file->buf &&
+			(S_ISDIR(file->buf->st_mode) || (S_ISLNK(file->buf->st_mode) &&
+			flag->l == 0)))
 			g_error = 1;
 		file = file->next;
 	}
