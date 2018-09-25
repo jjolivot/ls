@@ -6,7 +6,7 @@
 /*   By: jjolivot <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/09 18:04:53 by jjolivot          #+#    #+#             */
-/*   Updated: 2018/09/20 22:39:40 by jjolivot         ###   ########.fr       */
+/*   Updated: 2018/09/24 22:34:14 by jjolivot         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	ft_print_date_tab(time_t tv_sec)
 	ft_putstr("\t");
 }
 
-void	ft_list_display(t_file *file, t_flag flag)
+void	ft_list_display(t_file *file, t_flag *flag)
 {
 	while (file)
 	{
@@ -87,17 +87,17 @@ void	ft_display2(t_file *file)
 	ft_print_date_tab(file->buf->st_mtimespec.tv_sec);
 }
 
-int		ft_display(t_file *file, t_flag flag)
+int		ft_display(t_file *file, t_flag *flag)
 {
 	char			*tmp;
 
-	if (flag.l && file->buf)
+	if (flag->l && file->buf)
 	{
 		ft_display2(file);
 	}
 	if (file->buf)
 		ft_putstr(file->name);
-	if (file->buf && flag.l && S_ISLNK(file->buf->st_mode))
+	if (file->buf && flag->l && S_ISLNK(file->buf->st_mode))
 	{
 		ft_putstr(" -> ");
 		if (!(tmp = (char *)malloc(sizeof(char) * 4096 + 1)))

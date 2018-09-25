@@ -6,7 +6,7 @@
 /*   By: jjolivot <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/07 12:39:17 by jjolivot          #+#    #+#             */
-/*   Updated: 2018/09/20 21:08:39 by jjolivot         ###   ########.fr       */
+/*   Updated: 2018/09/22 19:48:41 by jjolivot         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,20 +34,20 @@ void			ft_inverse_maillon(struct s_arg **maillon)
 	(*maillon)->next = tmp;
 }
 
-struct s_arg	*ft_time_sort(struct s_arg **maillon, t_flag flag)
+struct s_arg	*ft_time_sort(struct s_arg **maillon, t_flag *flag)
 {
 	struct stat file;
 	struct stat filenext;
 
 	while ((*maillon)->next)
 	{
-		if (flag.l)
+		if (flag->l)
 			lstat((*maillon)->path, &file);
-		if ((*maillon)->next && flag.l)
+		if ((*maillon)->next && flag->l)
 			lstat((*maillon)->next->path, &filenext);
-		if (!flag.l)
+		if (!flag->l)
 			stat((*maillon)->path, &file);
-		if ((*maillon)->next && !flag.l)
+		if ((*maillon)->next && !flag->l)
 			stat((*maillon)->next->path, &filenext);
 		if (file.st_mtimespec.tv_sec < filenext.st_mtimespec.tv_sec)
 		{
@@ -63,7 +63,7 @@ struct s_arg	*ft_time_sort(struct s_arg **maillon, t_flag flag)
 	return (*maillon);
 }
 
-struct s_arg	*ft_sort_file_and_dir(struct s_arg **maillon, t_flag flag)
+struct s_arg	*ft_sort_file_and_dir(struct s_arg **maillon, t_flag *flag)
 {
 	struct s_arg *first;
 

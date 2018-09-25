@@ -6,7 +6,7 @@
 /*   By: jjolivot <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/06 22:59:38 by jjolivot          #+#    #+#             */
-/*   Updated: 2018/09/20 21:50:28 by jjolivot         ###   ########.fr       */
+/*   Updated: 2018/09/22 19:49:11 by jjolivot         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,14 +31,14 @@ void	ft_delete_arg(t_arg **arg)
 	free(tmp);
 }
 
-int		ft_is_file(t_arg **maillon, t_flag flag)
+int		ft_is_file(t_arg **maillon, t_flag *flag)
 {
 	struct stat	file;
 
 	errno = 0;
 	if ((*maillon) && (*maillon)->path)
 		lstat((*maillon)->path, &file);
-	if (S_ISDIR(file.st_mode) || (S_ISLNK(file.st_mode) && flag.l == 0))
+	if (S_ISDIR(file.st_mode) || (S_ISLNK(file.st_mode) && flag->l == 0))
 	{
 		return (0);
 	}

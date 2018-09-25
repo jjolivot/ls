@@ -6,7 +6,7 @@
 /*   By: jjolivot <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/04 19:46:07 by jjolivot          #+#    #+#             */
-/*   Updated: 2018/09/20 22:39:23 by jjolivot         ###   ########.fr       */
+/*   Updated: 2018/09/25 17:59:56 by jjolivot         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,14 +34,18 @@ int		ft_is_arg(char c, t_flag *flag)
 void	ft_permission_denied(char *path)
 {
 	struct stat	buf;
+	char		*tmp;
 	int			s;
 
 	s = stat(path, &buf);
 	if (s != -1)
 	{
+		tmp = ft_path_convert(path);
 		ft_putstr("ft_ls: ");
-		ft_putstr(path);
+		ft_putstr(tmp);
+		free(tmp);
 		ft_putstr(": Permission denied\n");
+		g_error = 1;
 	}
 	else
 	{
@@ -74,9 +78,10 @@ void	ft_check_fexist(struct s_arg **maillon)
 	{
 		if (lstat((*maillon)->path, &buf) == -1)
 		{
-			ft_putstr("ls: ");
+			ft_putstr("ft_ls: ");
 			ft_putstr((*maillon)->path);
 			ft_putstr(": No such file or directory\n");
+			g_error = 1;
 			tmp = (*maillon);
 			(*maillon) = (*maillon)->next;
 			if (first == tmp)
@@ -98,7 +103,7 @@ int		ft_pars_error(int argc, char **argv, t_flag *flag)
 
 	i = 1;
 	y = 0;
-	while (i < argc && argv[i][0] == '-' && argv[i][1] != '-')
+	while (i < argc && argv[i][0] == '-' && argv[i][1] && argv[i][1] != '-')
 	{
 		while (argv[i][++y])
 			if (ft_is_arg(argv[i][y], flag))

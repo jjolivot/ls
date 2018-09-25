@@ -6,7 +6,7 @@
 /*   By: jjolivot <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/07 16:53:40 by jjolivot          #+#    #+#             */
-/*   Updated: 2018/09/20 22:18:32 by jjolivot         ###   ########.fr       */
+/*   Updated: 2018/09/24 16:56:12 by jjolivot         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ t_file	*ft_info_2(char *path, struct dirent *dd,
 }
 
 t_file	*ft_info_link(char *path,
-		int (stati)(const char *, struct stat *), t_flag flag)
+		int (stati)(const char *, struct stat *), t_flag *flag)
 {
 	t_file			*file;
 	DIR				*dir;
@@ -93,7 +93,7 @@ t_file	*ft_info_link(char *path,
 	if ((dir = opendir(path)))
 	{
 		while ((dd = readdir(dir)))
-			if (dd && (dd->d_name[0] != '.' || flag.a))
+			if (dd && (dd->d_name[0] != '.' || flag->a))
 				file = ft_info_2(path, dd, stati, file);
 		closedir(dir);
 	}

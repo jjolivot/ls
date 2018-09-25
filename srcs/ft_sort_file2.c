@@ -6,7 +6,7 @@
 /*   By: jjolivot <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/20 19:06:18 by jjolivot          #+#    #+#             */
-/*   Updated: 2018/09/20 20:59:09 by jjolivot         ###   ########.fr       */
+/*   Updated: 2018/09/24 22:36:34 by jjolivot         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,15 +84,15 @@ struct s_file	*ft_total_size(struct s_file *file)
 	return (first);
 }
 
-struct s_file	*ft_sort_file(struct s_file *file, t_flag flag)
+struct s_file	*ft_sort_file(struct s_file *file, t_flag *flag)
 {
 	if (file)
 	{
 		ft_total_size(file);
 		file = ft_merge_sort_file(file, ft_merge_alpha);
-		if (flag.t)
-			file = ft_merge_sort_file(file, ft_merge_time);
-		if (flag.r)
+		if (flag->t)
+			file = ft_merge_sort_file(file, ft_merge_time_nf);
+		if (flag->r)
 			file = ft_reverse_file(file);
 	}
 	return (file);

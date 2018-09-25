@@ -6,45 +6,39 @@
 /*   By: jjolivot <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/06 21:43:51 by jjolivot          #+#    #+#             */
-/*   Updated: 2018/09/20 22:38:30 by jjolivot         ###   ########.fr       */
+/*   Updated: 2018/09/25 18:06:06 by jjolivot         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/ft_ls.h"
 
-int	ft_is_dir(char *path, t_flag flag)
+int	ft_is_dir(char *path, t_flag *flag)
 {
 	struct stat file;
 
 	lstat(path, &file);
-	if (S_ISDIR(file.st_mode) || (S_ISLNK(file.st_mode) && flag.l == 0))
+	if (S_ISDIR(file.st_mode) || (S_ISLNK(file.st_mode) && flag->l == 0))
 	{
 		return (1);
 	}
 	return (0);
 }
 
-int	ft_rels(t_file *file, t_flag flag, int multiple_arg)
+int	ft_rels(t_file *file, t_flag *flag, int multiple_arg)
 {
 	while (file)
 	{
-		if (file->buf && S_ISDIR(file->buf->st_mode)
+		if (ft_is_dir(file->path, flag))
+			if (file->buf && S_ISDIR(file->buf->st_mode)
 				&& ft_strcmp(file->name, ".")
 				&& ft_strcmp(file->name, ".."))
-		{
-			if (!ft_strstr(file->path, "dev/fd/") &&
-					!ft_strstr(file->path, "dev//fd/"))
 			{
 				ft_putchar('\n');
 				ft_ls(file->path, flag, multiple_arg);
 			}
-			else
-			{
-				ft_putstr("ft_ls: ");
-				ft_putstr(ft_strrchr(file->path, '/') + 1);
-				ft_putstr(": directory causes a cycle\n");
-			}
-		}
+		if (!ft_is_dir(file->path, flag) && (S_ISDIR(file->buf->st_mode) ||
+			(S_ISLNK(file->buf->st_mode) && flag->l == 0)))
+			g_error = 1;
 		file = file->next;
 	}
 	return (0);
@@ -58,7 +52,7 @@ int	ft_putnbr_n(size_t i)
 	return (0);
 }
 
-int	ft_ls(char *path, t_flag flag, int multiple_arg)
+int	ft_ls(char *path, t_flag *flag, int multiple_arg)
 {
 	t_file	*file;
 
@@ -74,12 +68,12 @@ int	ft_ls(char *path, t_flag flag, int multiple_arg)
 			ft_putstr(":\n");
 		file = ft_info_link(path, lstat, flag);
 		file = ft_sort_file(file, flag);
-		if (flag.l && file && file->buf)
+		if (flag->l && file && file->buf)
 			ft_putnbr_n(file->total_size);
 		ft_list_display(file, flag);
 		if (multiple_arg)
 			ft_putchar('\n');
-		if (flag.rr)
+		if (flag->rr)
 			ft_rels(file, flag, 1);
 	}
 	ft_free_all_files(file);

@@ -6,7 +6,7 @@
 /*   By: jjolivot <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/17 13:11:17 by jjolivot          #+#    #+#             */
-/*   Updated: 2018/09/20 21:02:11 by jjolivot         ###   ########.fr       */
+/*   Updated: 2018/09/24 22:41:26 by jjolivot         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,27 +63,28 @@ struct s_file	*ft_reverse_file(struct s_file *file)
 	return (file);
 }
 
-struct s_file	*ft_merge_time(struct s_file *maillon, struct s_file *second)
+struct s_file	*ft_merge_time_nf(struct s_file *maillon, struct s_file *second)
 {
-	t_file	*result;
+	struct s_file	*result;
 
 	if (!maillon)
 		return (second);
 	if (!second)
 		return (maillon);
-	if (second && second->buf && second->buf->st_mtimespec.tv_sec <
-			maillon->buf->st_mtimespec.tv_sec)
-	{
-		result = maillon;
-		result->next = ft_merge_time(maillon->next, second);
-		if (result->next)
-			result->next->prev = result;
-	}
+	if (second && second->buf && (((second->buf->st_mtimespec.tv_sec <
+		maillon->buf->st_mtimespec.tv_sec) || (second->buf->st_mtimespec.tv_sec
+		== maillon->buf->st_mtimespec.tv_sec &&
+		second->buf->st_mtimespec.tv_nsec < maillon->buf->st_mtimespec.tv_nsec)
+		|| (second->buf->st_mtimespec.tv_sec ==
+		maillon->buf->st_mtimespec.tv_sec && second->buf->st_mtimespec.tv_nsec
+		== maillon->buf->st_mtimespec.tv_nsec && ft_strcmp(maillon->path,
+		second->path) < 0))))
+		result = ft_merge_time_suite(maillon, second);
 	else
 	{
 		result = second;
 		if (result)
-			result->next = (ft_merge_time(maillon, second->next));
+			result->next = (ft_merge_time_nf(maillon, second->next));
 	}
 	if (result->next)
 		result->next->prev = result;
